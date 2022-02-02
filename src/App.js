@@ -4,7 +4,7 @@ import Join from './components/Join/join';
 import Chat from './components/Chat/chat';
 import './app.css'
 import io from 'socket.io-client';
-const socket = io.connect('https://ping-me-chat-app.herokuapp.com');
+const socket = io.connect('https://ping-me-chat-app-server.herokuapp.com');
 
 const App = () =>{
     return(<Router>
