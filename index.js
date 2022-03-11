@@ -3,10 +3,14 @@ const {Server} = require('socket.io');
 const http = require('http');
 const app = express();
 const cors = require('cors');
+const { mongoDB } = require('./mongoDB');
+const { insert, find, remove } = require('./helper/DBUtils/mongoDB');
+const roomChatSchema = require('./models/roomChat');
+const roomUserSchema = require('./models/roomUser');
+const routes = require('./routes/index');
 
 app.use(cors());
-
-const chatHistory = {};
+app.use('/',routes);
 
 const server = http.createServer(app);
 const io = new Server(server,{
@@ -15,20 +19,42 @@ const io = new Server(server,{
     methods: ['GET','POST','PUT'],
 }});
 
-io.on("connection", (socket)=> {
+io.on("connection", async (socket)=> {
     console.log(`Connected with ID: ${socket.id}`);
-    socket.on('join_room',(details)=>{
-        socket.join(details.room);
+    socket.on('join_room',async (details)=>{
+        const roomDetails = {
+            roomName: details.roomName,
+             userName: details.userName,
+              socketId: socket.id
+            };
+        socket.join(details.roomName);
+        await insert(roomUserSchema,roomDetails).catch((err)=>{
+            console.log(err);
+        });
     });
-    socket.on('new_message', (details)=> {
-        if(chatHistory[details.room]){
-            chatHistory[details.room].push(details);
-        }else{
-            chatHistory[details.room] = [details];
-        }
-        socket.to(details.room).emit('receive_message',chatHistory[details.room]);
+    socket.on('new_message', async (details)=> {
+        const NewMessage = {
+            roomName: details.roomName,
+            userName: details.userName,
+            message: details.message,
+            time: details.time
+        };
+        await insert(roomChatSchema, NewMessage).catch((err)=>{
+            console.log(err);
+        })
+        const chatHistory = await find(roomChatSchema, {roomName:details.roomName}).catch((err)=>{
+            console.log(err);
+        })
+        const userList = await find(roomUserSchema,{roomName: details.roomName}).catch((err)=>{
+            console.log(err);
+        })
+        socket.to(details.roomName).emit('receive_message',chatHistory);
+        socket.to(details.roomName).emit('user_list', userList);
     })
-    socket.on('disconnect', ()=>{
+    socket.on('disconnect', async()=>{
+        await remove(roomUserSchema,{socketId: socket.id}).catch((err)=>{
+            console.log(err);
+        })
         console.log('Disconnected.......', socket.id);
     })
 })
