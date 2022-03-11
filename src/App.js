@@ -1,16 +1,24 @@
-import React from "react";
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import {BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom';
 import Join from './components/Join/join';
 import Chat from './components/Chat/chat';
 import './app.css'
 import io from 'socket.io-client';
+import Login from "./components/login/login";
+import Authorization from "./components/authorization/authrization";
 const socket = io.connect('https://ping-me-chat-app-server.herokuapp.com');
 
-const App = () =>{
+const App =  () =>{
+    const [localToken, setLocalToken] = useState(null);
+    useEffect(()=>{
+        setLocalToken(localStorage.getItem('token'));
+    },[]);
     return(<Router>
         <Routes>
-        <Route exact path ="/" element ={<Join socket ={socket}/>}/>
-        <Route path="/chat" element ={<Chat socket ={socket}/>}/>
+        <Route exact path ="/" element ={<Authorization socket ={socket} />}/>
+        <Route exact path ="/join" element ={localToken ? <Join socket ={socket}/>: <Navigate to='/login'/>}/>
+        <Route path="/chat"  element ={localToken ? <Chat socket ={socket} />: <Navigate to='/login'/>}/>
+        <Route path='/login' element ={!localToken ? <Login socket ={socket}/>: <Navigate to='/join'/>}/>
         </Routes>
     </Router>);
 };

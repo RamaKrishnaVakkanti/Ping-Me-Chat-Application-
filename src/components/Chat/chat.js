@@ -4,43 +4,62 @@ import './chat.css'
 import moment from "moment";
 import ScrollToTheBottom from 'react-scroll-to-bottom';
 
-// import io from 'socket.io-client';
-
-// let socket;
 const Chat = ({socket})=> {
     const [message, setMessage] = useState('');
+    const {roomName, userName} = queryString.parse(window.location.search);
     const [chatHistory, setChatHistory] = useState([]);
-    const {room, name} = queryString.parse(window.location.search);
-
+    const [userList, setUserList] = useState([]);
     const sendNewMessage =async ()=>{
         if(message){
-            await socket.emit('new_message',{name,room, message,time: moment() });
-        setChatHistory((history)=> [...history, {name,room, message,time: moment() }]);
+            const newMessage = {userName,roomName, message,time: moment() };
+            await socket.emit('new_message',newMessage);
+        setChatHistory((history)=> [...history, newMessage]);
         setMessage('');
         }
     }
-    
-    useEffect(()=>{
+
+    useEffect(()=>{ 
         socket.on('receive_message', (chatHistory)=> {
             setChatHistory(chatHistory);
         });
-        
-    })
+        socket.on('user_list',(userList)=>{
+            setUserList(userList);
+        });
+
+    },[]);
     return (
     <div className="outer-chat">
         <div className="inner-chat">
         <h1 className="header">Ping me</h1>
+        <div className="userList">
+
+            <div className="userList-header">
+            <h3>User List</h3>
+            </div>
+        <div className="userList-body">
+            
+                {
+                userList.map((user, index)=>{
+                    return(<p className="everyUser">{index+1}. {user.userName}</p>)
+                })}
+                
+                </div>
+        </div>
             <div className="chat-body">
                 <ScrollToTheBottom className="scroll">
                 {chatHistory.map((details)=> {
                     return (
-                    <div className="message" id={details.name == name ? 'author': 'other'}>
+                    <div className="message" id={details.userName == userName ? 'author': 'other'}>
                         <div>
+                        {details.userName != userName && <div className="meta-username">
+                           <p>{details.userName}</p>
+                           
+                        </div>}
                         <div className="original-message">
                             <p>{details.message}</p>
                         </div>
-                        <div className="meta-message">
-                           <p>{details.name} . {moment(details.time).calendar()}</p>
+                        <div className="meta-time">
+                           <p>{moment(details.time).calendar()}</p>
                            
                         </div>
                         </div>
