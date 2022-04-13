@@ -6,7 +6,8 @@ import './app.css'
 import io from 'socket.io-client';
 import Login from "./components/login/login";
 import Authorization from "./components/authorization/authrization";
-const socket = io.connect('https://ping-me-chat-app-server.herokuapp.com');
+import config from './config/properties.json'
+const socket = io.connect(config.baseURL);
 
 const App =  () =>{
     const [localToken, setLocalToken] = useState(null);

@@ -3,6 +3,8 @@ import queryString from 'query-string';
 import './chat.css'
 import moment from "moment";
 import ScrollToTheBottom from 'react-scroll-to-bottom';
+import axios from "axios";
+import config from '../../config/properties.json';
 
 const Chat = ({socket})=> {
     const [message, setMessage] = useState('');
@@ -25,7 +27,20 @@ const Chat = ({socket})=> {
         socket.on('user_list',(userList)=>{
             setUserList(userList);
         });
-
+       axios(`${config.baseURL}/chatHistory?room=${roomName}`,{
+            headers: {
+                Authorization: localStorage.getItem('token'),
+            },
+            method: "GET"
+        }).then((response)=>{
+            response = JSON.parse(JSON.stringify(response.data));
+            setChatHistory(response.chatHistory);
+            setUserList(response.userList);
+        })
+        .catch((err)=>{
+            console.log(err);
+        });
+        
     },[]);
     return (
     <div className="outer-chat">
@@ -42,6 +57,10 @@ const Chat = ({socket})=> {
                 userList.map((user, index)=>{
                     return(<p className="everyUser">{index+1}. {user.userName}</p>)
                 })}
+                {/* {
+                [...new Set(userList.filter((user) => user.userName))].map((user, index)=>{
+                    return(<p className="everyUser">{index+1}. {user}</p>)
+                })} */}
                 
                 </div>
         </div>

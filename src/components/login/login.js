@@ -1,8 +1,10 @@
 import "./login.css";
+import config from '../../config/properties.json';
+
 const Login = () => {
   console.log("login");
   const loginCall = () => {
-    window.open("https://ping-me-chat-app-server.herokuapp.com/login", "_top");
+    window.open(`${config.baseURL}/login`, "_top");
   };
   return (
     <div className="outer">
