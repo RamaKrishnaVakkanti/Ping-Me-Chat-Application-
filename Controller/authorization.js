@@ -1,6 +1,7 @@
 require('dotenv').config();
 
-const JWT = require("jsonwebtoken")
+const JWT = require("jsonwebtoken");
+const config = require('../config/properties.json');
 
 const authorization = (req,res)=>{
     JWT.verify(req.headers.authorization, process.env.SECRET_KEY,(err, response) =>{
@@ -13,7 +14,7 @@ const authorization = (req,res)=>{
             return res.status(200).json(userDetails);
         }else{
             
-            return res.redirect(`https://ping-me-chat-app.herokuapp.com/login`);
+            return res.redirect(`${config.baseURL}/login`);
         }
     })
 }

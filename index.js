@@ -28,9 +28,16 @@ io.on("connection", async (socket)=> {
               socketId: socket.id
             };
         socket.join(details.roomName);
-        await insert(roomUserSchema,roomDetails).catch((err)=>{
+        const user = await find(roomUserSchema,{roomName: details.roomName, userName: details.userName})
+        .catch((err)=>{
             console.log(err);
         });
+        if(!user.length){
+            await insert(roomUserSchema,roomDetails).catch((err)=>{
+                console.log(err);
+            });
+        }
+        
     });
     socket.on('new_message', async (details)=> {
         const NewMessage = {
