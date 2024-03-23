@@ -9,7 +9,8 @@ const authorization = (req,res)=>{
             const userDetails = {
                 id: response.data.id,
                 name: response.data.username,
-                email: response.data.email
+                email: response.data.email,
+                profilePic: response.data.profilePic
             }
             return res.status(200).json(userDetails);
         }else{

@@ -37,6 +37,14 @@ io.on("connection", async (socket)=> {
                 console.log(err);
             });
         }
+        const chatHistory = await find(roomChatSchema, {roomName:details.roomName}).catch((err)=>{
+            console.log(err);
+        })
+        const userList = await find(roomUserSchema,{roomName: details.roomName}).catch((err)=>{
+            console.log(err);
+        })
+        socket.to(details.roomName).emit('receive_message',chatHistory);
+        socket.to(details.roomName).emit('user_list', userList);
         
     });
     socket.on('new_message', async (details)=> {

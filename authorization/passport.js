@@ -14,6 +14,7 @@ passport.use(
           id: profile.id,
           username: profile.displayName,
           email: profile.emails[0].value,
+          profilePic: profile.photos[0].value
         };
         done(null, user)
     })
