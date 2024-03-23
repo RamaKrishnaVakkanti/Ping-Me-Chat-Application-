@@ -15,9 +15,9 @@ const Login = () => {
             <img className="google-image"
               width="15px"
               alt="Google login"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+              src="https://developers.google.com/identity/images/g-logo.png"
             />
-               Sign in with Google
+               Login in with Google
           </button>
         </div>
       </div>
