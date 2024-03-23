@@ -1,0 +1,19 @@
+.inputButton-login{
+    color: black ;
+      /* text-transform: uppercase; */
+      text-decoration: none;
+      /* background: #1abc9c; */
+      margin-top: 60px;
+      padding: 8px;
+      border-radius: 5px;
+      display: inline-block;
+      border: none;
+      width: 80%;
+      height: 50px;
+      cursor: pointer;
+      font-size:20px;
+}
+
+.google-image{
+  margin-right: 10px;
+}
