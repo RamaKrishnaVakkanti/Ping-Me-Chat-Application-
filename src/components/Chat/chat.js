@@ -48,7 +48,7 @@ const Chat = ({ socket }) => {
     return (
         <div className="outer-chat">
             <div className="inner-chat">
-                <h1 className="header">Ping Me</h1>
+                <h1 className="header">CrewConvo</h1>
                 <div className="belowHeader">
                     <div className="chatArea">
                         <div className="chat-body">
