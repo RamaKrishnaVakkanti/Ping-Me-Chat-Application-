@@ -9,7 +9,7 @@ const Login = () => {
   return (
     <div className="outer">
       <div className="inner">
-        <h1 className="heading">PING ME</h1>
+        <h1 className="heading">CrewConvo</h1>
         <div>
           <button className="inputButton-login" onClick={loginCall}>
             <img className="google-image"
